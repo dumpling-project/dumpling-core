@@ -1,8 +1,8 @@
 import {Wheat} from "../element/wheat.ts";
-import {Container} from "typedi";
 import {CONTROLLER} from "./metadata.ts";
 import {REQUEST_MAPPING_METADATA_KEY} from "./request.mapping.decorator.ts";
 import {joinPaths} from "./utils.ts";
+import {ConstructorFunction, DumplingContainer} from "../di/dumpling.container.ts";
 
 @Wheat()
 export class FrontController {
@@ -12,12 +12,11 @@ export class FrontController {
         this.loadControllers();
     }
     private loadControllers() {
-        const wheatList = (Container as any).instances;
-        console.log(wheatList);
+        const allWheatInstance = DumplingContainer.instance.getAllWheatInstance();
 
-        wheatList.forEach((wheat: any) => {
-            const target = wheat.constructor;
+        allWheatInstance.forEach(( wheat: any , wheatKey: ConstructorFunction) => {
 
+            const target = wheatKey;
             const controllerMetadata = Reflect.getMetadata(CONTROLLER,target);
 
             if(controllerMetadata){
@@ -33,7 +32,8 @@ export class FrontController {
                     if(requestMappingMetadata){
                         const fullPath = joinPaths(controllerMetadata.path + requestMappingMetadata.path);
                         const key = requestMappingMetadata.method+":"+fullPath;
-                        this.controllers.set(key, {method: requestMappingMetadata.method, action: method});
+                        this.controllers.set(key, {method: requestMappingMetadata.method, action: method.bind(wheat)});
+
                     }
                 })
             }
@@ -49,6 +49,8 @@ export class FrontController {
 
         const controllerKey = method+":"+fullPath
         const controllerAction = this.controllers.get(controllerKey);
+
+        console.log("Request is called : " + controllerKey);
 
         if(controllerAction){
             return controllerAction.action(request);

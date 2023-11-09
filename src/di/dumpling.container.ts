@@ -1,4 +1,4 @@
-type ConstructorFunction = {new(...args: any[]): any};
+export type ConstructorFunction = {new(...args: any[]): any};
 
 export class DumplingContainer{
     private static _instance : DumplingContainer;
@@ -23,6 +23,10 @@ export class DumplingContainer{
 
     public getWheatInstance(wheat: ConstructorFunction){
         return this._wheatInstanceList.get(wheat);
+    }
+
+    public getAllWheatInstance(){
+        return this._wheatInstanceList;
     }
 
     public addWheatDependency(wheat: ConstructorFunction, dependency: ConstructorFunction[] | undefined){
@@ -81,12 +85,11 @@ export class DumplingContainer{
 
     public initWheat(){
         this._wheatOrderList.forEach((wheat : ConstructorFunction )=>{
-            this.createWheatInstance(wheat);
+            this.generateWheatInstance(wheat);
         })
     }
-    public createWheatInstance(wheat: ConstructorFunction){
+    public generateWheatInstance(wheat: ConstructorFunction){
         let dependency = this.getWheatDependency(wheat);
-        console.log(dependency);
         let dependencyInstance = new Array<any>();
         if(dependency){
             dependency.forEach((dep)=>{

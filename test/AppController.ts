@@ -7,6 +7,7 @@ export class AppController {
     constructor(private appService: AppService) {}
     @Get("/hello")
     public hello(){
-        return this.appService.hello();
+        const text =  this.appService.hello();
+        return new Response(text);
     }
 }

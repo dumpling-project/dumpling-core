@@ -1,9 +1,9 @@
 import {FrontController} from "./controller/front.controller.ts";
-import console from "console";
 import * as path from "path";
 import * as fs from "fs";
 import {WHEAT} from "./element/wheat.ts";
 import {DumplingContainer} from "./di/dumpling.container.ts";
+
 export class Dumpling {
     constructor() {
     }
@@ -19,6 +19,7 @@ export class Dumpling {
 
             this.resolveDi(flatWheatList, dumplingContainer);
 
+            this.injectEssentialWheat(dumplingContainer);
             this.run();
         })
 
@@ -30,8 +31,8 @@ export class Dumpling {
         Bun.serve({
             port:4000,
             fetch(request:Request){
-                console.log(request);
-                return new Response("Hello World");
+                const frontController = DumplingContainer.instance.getWheatInstance(FrontController);
+                return frontController.router(request);
             }
         })
     }
@@ -79,11 +80,11 @@ export class Dumpling {
         dumplingContainer.resolveDi();
         dumplingContainer.initWheat();
 
-
     }
 
-
-
+    private injectEssentialWheat(dumplingContainer:DumplingContainer){
+        dumplingContainer.addWheatInstance(FrontController, new FrontController());
+    }
 
 }
 
