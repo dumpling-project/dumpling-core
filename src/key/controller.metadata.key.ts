@@ -12,3 +12,4 @@ export type RequestMappingMetadataType = { path: string; method: HttpMethodType 
 
 // Url Parameter
 export const PARAM_METADATA_KEY = 'param'; // Param
+export const QUERY_METADATA_KEY = 'query'; // Query

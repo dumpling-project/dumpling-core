@@ -124,19 +124,13 @@ export class FrontController {
     let controllerAction: Function | null = null;
     let response = null;
 
-    console.log('fullPath', fullPath);
-    console.log('method', method);
-
     controllerAction = this.findStaticRouteController(method as HttpMethodType, fullPath);
-    if (controllerAction) {
-      response = (await controllerAction(request)) as Response;
-    }
-
     if (!controllerAction) {
       controllerAction = this.findDynamicRouteController(method as HttpMethodType, fullPath);
-      if (controllerAction) {
-        response = (await controllerAction(request)) as Response;
-      }
+    }
+
+    if (controllerAction) {
+      response = await controllerAction(request);
     }
 
     return response ? response : new Response('Not Found', { status: 404 });

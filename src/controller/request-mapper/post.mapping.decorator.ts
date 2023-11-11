@@ -1,15 +1,12 @@
 import {
   CONTROLLER,
-  PARAM_METADATA_KEY,
   REQUEST_MAPPING_METADATA_KEY,
   RequestMappingMetadataType,
 } from '../../key/controller.metadata.key.ts';
-import { RequestMapper } from './request.mapper.ts';
 import { HttpMethod } from '../../global/http/http.method.ts';
 import { ParamUtils } from '../url-parameter/param/params.utils.ts';
-import { QueryUtils } from '../url-parameter/query/query.utils.ts';
 
-export function Get(path: string): MethodDecorator {
+export function Post(path: string): MethodDecorator {
   return function (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
 
@@ -20,19 +17,14 @@ export function Get(path: string): MethodDecorator {
       const request = args[0] as Request;
       const url = new URL(request.url);
 
-      let paramsResult = ParamUtils.applyParams(fullPath, url.pathname, target, propertyKey, args);
-      let queryResult = QueryUtils.applyQuery(url, target, propertyKey, paramsResult);
-
-      let combinedResult = [...paramsResult, ...queryResult];
-      combinedResult.sort((a, b) => a.index - b.index);
-      let modifiedArgs = combinedResult.map((item) => item.value);
+      const modifiedArgs = ParamUtils.applyParams(fullPath, url.pathname, target, propertyKey, args);
 
       return originalMethod.apply(this, modifiedArgs);
     };
 
     const requestMappingMetadata: RequestMappingMetadataType = {
       path,
-      method: HttpMethod.GET,
+      method: HttpMethod.POST,
     };
 
     Reflect.defineMetadata(REQUEST_MAPPING_METADATA_KEY, requestMappingMetadata, descriptor.value);

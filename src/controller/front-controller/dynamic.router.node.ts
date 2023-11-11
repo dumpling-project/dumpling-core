@@ -1,9 +1,8 @@
-import * as http from "http";
-import {HttpMethod} from "../../global/http/http.method.ts";
+import { HttpMethodType } from '../../global/http/http.method.ts';
 
 export class DynamicRouterNode {
-    public children: Map<string,DynamicRouterNode> = new Map<string,DynamicRouterNode>();
-    public action: Map<HttpMethod, Function> = new Map<HttpMethod, Function>
+  public children: Map<string, DynamicRouterNode> = new Map<string, DynamicRouterNode>();
+  public action: Map<HttpMethodType, Function> = new Map<HttpMethodType, Function>();
 
-    constructor(public segment: string) {}
+  constructor(public segment: string) {}
 }
