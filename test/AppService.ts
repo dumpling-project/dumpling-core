@@ -1,9 +1,8 @@
-import {Wheat} from "../src";
+import { Wheat } from '../src';
 
 @Wheat()
 export class AppService {
-
-    public hello(){
-        return "hello world"
-    }
+  public hello(id: string) {
+    return 'hello world' + id;
+  }
 }

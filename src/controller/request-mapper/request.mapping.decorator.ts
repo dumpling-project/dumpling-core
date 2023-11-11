@@ -1,29 +1,13 @@
-export const RequestMethod = {
-    GET: 'GET',
-    POST: 'POST',
-    PUT: 'PUT',
-    DELETE: 'DELETE',
-    PATCH: 'PATCH'
-} as const
-export type RequestMethod = typeof RequestMethod[keyof typeof RequestMethod]
+import {REQUEST_MAPPING_METADATA_KEY, RequestMappingMetadataType} from "../../key/controller.metadata.key.ts";
+import {HttpMethod} from "../../global/http/http.method.ts";
 
-export const REQUEST_MAPPING_METADATA_KEY = 'requestMappingMetadataKey'
-export type RequestMappingMetadata = { path: string, method: RequestMethod }
 
-export function Get(path: string): MethodDecorator {
-    const requestMappingMetadata :RequestMappingMetadata = {
-        path,
-        method: RequestMethod.GET
-    }
-  return function (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) {
-    Reflect.defineMetadata(REQUEST_MAPPING_METADATA_KEY, requestMappingMetadata, descriptor.value);
-  }
-}
+
 
 export function Post(path: string): MethodDecorator {
-    const requestMappingMetadata :RequestMappingMetadata = {
+    const requestMappingMetadata :RequestMappingMetadataType = {
         path,
-        method: RequestMethod.POST
+        method: HttpMethod.POST
     }
   return function (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) {
     Reflect.defineMetadata(REQUEST_MAPPING_METADATA_KEY, requestMappingMetadata, descriptor.value);
@@ -31,9 +15,9 @@ export function Post(path: string): MethodDecorator {
 }
 
 export function Put(path: string): MethodDecorator {
-    const requestMappingMetadata :RequestMappingMetadata = {
+    const requestMappingMetadata :RequestMappingMetadataType = {
         path,
-        method: RequestMethod.PUT
+        method: HttpMethod.PUT
     }
   return function (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) {
     Reflect.defineMetadata(REQUEST_MAPPING_METADATA_KEY, requestMappingMetadata, descriptor.value);
@@ -41,9 +25,9 @@ export function Put(path: string): MethodDecorator {
 }
 
 export function Delete(path: string): MethodDecorator {
-    const requestMappingMetadata :RequestMappingMetadata = {
+    const requestMappingMetadata :RequestMappingMetadataType = {
         path,
-        method: RequestMethod.DELETE
+        method: HttpMethod.DELETE
     }
   return function (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) {
     Reflect.defineMetadata(REQUEST_MAPPING_METADATA_KEY, requestMappingMetadata, descriptor.value);
@@ -51,9 +35,9 @@ export function Delete(path: string): MethodDecorator {
 }
 
 export function Patch(path: string): MethodDecorator {
-    const requestMappingMetadata :RequestMappingMetadata = {
+    const requestMappingMetadata :RequestMappingMetadataType = {
         path,
-        method: RequestMethod.PATCH
+        method: HttpMethod.PATCH
     }
   return function (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) {
     Reflect.defineMetadata(REQUEST_MAPPING_METADATA_KEY, requestMappingMetadata, descriptor.value);
