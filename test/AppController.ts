@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '../src';
+import { Body, Controller, Get, Param, Post, Query } from '../src';
 import { AppService } from './AppService.ts';
 
 @Controller('/test')
@@ -16,5 +16,11 @@ export class AppController {
   public async hello2() {
     const text = 'Hello2@@@@@';
     return new Response(text);
+  }
+
+  @Post('/hello')
+  public async postHello(@Body() body: any) {
+    console.log(body);
+    return new Response('Post Hello');
   }
 }

@@ -7,3 +7,4 @@ export { Post } from './controller/request-mapper/post.mapping.decorator.ts';
 export { Get } from './controller/request-mapper/get.mapping.decorator.ts';
 export { Param } from './controller/url-parameter/param/param.decorator.ts';
 export { Query } from './controller/url-parameter/query/query.decorator.ts';
+export { Body } from './controller/url-parameter/body/body.decorator.ts';
