@@ -8,6 +8,7 @@ import { RequestMapper } from './request.mapper.ts';
 import { HttpMethod } from '../../global/http/http.method.ts';
 import { ParamUtils } from '../url-parameter/param/param.utils.ts';
 import { QueryUtils } from '../url-parameter/query/query.utils.ts';
+import { RequestUtils } from '../url-parameter/request/request.utils.ts';
 
 export function Delete(path: string): MethodDecorator {
   return function (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) {
@@ -22,8 +23,9 @@ export function Delete(path: string): MethodDecorator {
 
       let paramsResult = await ParamUtils.applyParams(fullPath, url.pathname, target, propertyKey, args);
       let queryResult = await QueryUtils.applyQuery(url, target, propertyKey, paramsResult);
+      let requestResult = await RequestUtils.applyRequest(request, target, propertyKey, args);
 
-      let combinedResult = [...paramsResult, ...queryResult];
+      let combinedResult = [...paramsResult, ...queryResult, ...requestResult];
       combinedResult.sort((a, b) => a.index - b.index);
       let modifiedArgs = combinedResult.map((item) => item.value);
 
