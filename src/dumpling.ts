@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { WHEAT } from './element/wheat.ts';
 import { DumplingContainer } from './di/dumpling.container.ts';
+import { MetadataContainer } from './metadata/metadata.container.ts';
 
 export class Dumpling {
   constructor() {}
@@ -73,5 +74,9 @@ export class Dumpling {
 
   private injectEssentialWheat(dumplingContainer: DumplingContainer) {
     dumplingContainer.addWheatInstance(FrontController, new FrontController());
+  }
+
+  private generateMetadataController() {
+    DumplingContainer.instance.addWheatInstance(MetadataContainer, new MetadataContainer());
   }
 }

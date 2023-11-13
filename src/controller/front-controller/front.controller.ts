@@ -8,6 +8,8 @@ import {
 import { RouterUtils } from './router.utils.ts';
 import { DynamicRouterNode } from './dynamic.router.node.ts';
 import { HttpMethodType } from '../../global/http/http.method.ts';
+import { AppController } from '../../../test/AppController.ts';
+import { AppService } from '../../../test/AppService.ts';
 
 type StaticRouteControllerMapType = {
   method: HttpMethodType;
@@ -35,13 +37,28 @@ export class FrontController {
       if (controllerMetadata) {
         const methods = Object.getOwnPropertyNames(target.prototype);
 
+        console.log(methods);
+
         methods.forEach((methodName) => {
           const method = target.prototype[methodName];
+          console.log('=======================');
+          console.log(methodName);
+
+          // console.log(
+          //   Reflect.getMetadata(
+          //     REQUEST_MAPPING_METADATA_KEY,
+          //     new AppController(DumplingContainer.instance.getWheatInstance(AppService)),
+          //     'helloGet',
+          //   ),
+          // );
 
           const requestMappingMetadata: RequestMappingMetadataType = Reflect.getMetadata(
             REQUEST_MAPPING_METADATA_KEY,
             method,
           );
+
+          console.log(requestMappingMetadata);
+          console.log(method);
 
           if (requestMappingMetadata && !RouterUtils.isDynamicPath(requestMappingMetadata.path)) {
             this.registerStaticRouteController(controllerMetadata.path, requestMappingMetadata, method.bind(wheat));

@@ -13,3 +13,7 @@ export { Param } from './controller/url-parameter/param/param.decorator.ts';
 export { Query } from './controller/url-parameter/query/query.decorator.ts';
 export { Body } from './controller/url-parameter/body/body.decorator.ts';
 export { Req } from './controller/url-parameter/request/request.decorator.ts';
+
+export { Middleware } from './element/middleware.ts';
+export { UseMiddleware } from './middleware/usemiddleware.decorator.ts';
+export type { MiddlewareInterface } from './middleware/middleware.interface.d.ts';
