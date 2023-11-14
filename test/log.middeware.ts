@@ -1,7 +1,7 @@
-import { Middleware, MiddlewareInterface } from '../src';
+import { AbstractMiddleware, Middleware } from '../src';
 
 @Middleware()
-export class LogMiddleware implements MiddlewareInterface {
+export class LogMiddleware extends AbstractMiddleware {
   public execute(request: Request, response: Response, next: Function) {
     console.log(Request);
     return next();

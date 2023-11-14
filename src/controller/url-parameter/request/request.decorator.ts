@@ -1,4 +1,4 @@
-import { REQUEST_METADATA_KEY } from '../../../key/controller.metadata.key.ts';
+import { REQUEST_METADATA_KEY } from '../../../metadata/key/controller.metadata.key.ts';
 
 export const Req = (): ParameterDecorator => {
   return function (target: Object, propertyKey: string | symbol | undefined, parameterIndex: number) {

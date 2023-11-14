@@ -16,4 +16,4 @@ export { Req } from './controller/url-parameter/request/request.decorator.ts';
 
 export { Middleware } from './element/middleware.ts';
 export { UseMiddleware } from './middleware/usemiddleware.decorator.ts';
-export type { MiddlewareInterface } from './middleware/middleware.interface.d.ts';
+export { AbstractMiddleware } from './middleware/middleware.abstract.ts';

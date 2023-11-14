@@ -2,20 +2,26 @@ import {
   CONTROLLER,
   PARAM_METADATA_KEY,
   REQUEST_MAPPING_METADATA_KEY,
-  RequestMappingMetadataType,
-} from '../../key/controller.metadata.key.ts';
+} from '../../metadata/key/controller.metadata.key.ts';
 import { RequestMapper } from './request.mapper.ts';
 import { HttpMethod } from '../../global/http/http.method.ts';
 import { ParamUtils } from '../url-parameter/param/param.utils.ts';
 import { QueryUtils } from '../url-parameter/query/query.utils.ts';
 import { RequestUtils } from '../url-parameter/request/request.utils.ts';
+import { MetadataContainer } from '../../metadata/metadata.container.ts';
+import { ControllerMetadataType, RequestMappingMetadataType } from '../../metadata/type/controller.metadata.type.ts';
 
 export function Get(path: string): MethodDecorator {
   return function (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: any[]) {
-      const prefix = Reflect.getMetadata(CONTROLLER, target.constructor).path;
+      const controllerMetadata = MetadataContainer.getClassMetadata<ControllerMetadataType>(
+        target.constructor,
+        CONTROLLER,
+      ) as ControllerMetadataType;
+      const prefix = controllerMetadata.path;
+      path;
       const fullPath = prefix ? prefix + path : path;
 
       const request = args[0] as Request;
@@ -37,6 +43,11 @@ export function Get(path: string): MethodDecorator {
       method: HttpMethod.GET,
     };
 
-    Reflect.defineMetadata(REQUEST_MAPPING_METADATA_KEY, requestMappingMetadata, descriptor.value);
+    MetadataContainer.setMethodMetadata(
+      target.constructor,
+      propertyKey as string,
+      REQUEST_MAPPING_METADATA_KEY,
+      requestMappingMetadata,
+    );
   };
 }

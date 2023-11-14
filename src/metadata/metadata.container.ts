@@ -2,55 +2,34 @@ import { Wheat } from '../element/wheat.ts';
 import { ConstructorFunction } from '../di/dumpling.container.ts';
 
 type MethodMetadataKeyType = {
-  constructor: ConstructorFunction;
+  constructorHash: string;
   methodName: string;
 };
 
-const classMetadataMap = new Map<ConstructorFunction, Map<symbol, any>>();
-
-const methodMetadataMap = new Map<MethodMetadataKeyType, Map<symbol, any>>();
-
-@Wheat()
 export class MetadataContainer {
-  private containerClassMetadataMap = new Map<ConstructorFunction, Map<symbol, any>>();
+  static classMetadataMap = new Map<string, Map<symbol, any>>();
 
-  private containerMethodMetadataMap = new Map<MethodMetadataKeyType, Map<symbol, any>>();
-
-  constructor() {
-    this.loadMetadata();
-  }
-
-  private loadMetadata() {
-    classMetadataMap.forEach((metadataMap, target) => {
-      const containerMetadataMap = new Map<symbol, any>();
-      metadataMap.forEach((metadataValue, metadataKey) => {
-        containerMetadataMap.set(metadataKey, metadataValue);
-      });
-      this.containerClassMetadataMap.set(target, containerMetadataMap);
-    });
-
-    methodMetadataMap.forEach((metadataMap, methodMetadataKey) => {
-      const containerMetadataMap = new Map<symbol, any>();
-      metadataMap.forEach((metadataValue, metadataKey) => {
-        containerMetadataMap.set(metadataKey, metadataValue);
-      });
-      this.containerMethodMetadataMap.set(methodMetadataKey, containerMetadataMap);
-    });
-  }
+  static methodMetadataMap = new Map<string, Map<symbol, any>>();
 
   public static setClassMetadata<T>(target: ConstructorFunction, metadataKey: symbol, metadataValue: T) {
-    let metadataMap = classMetadataMap.get(target);
+    const hasher = new Bun.CryptoHasher('sha256');
+    const classMetadataKey = hasher.update(target.toString()).digest('hex');
+
+    let metadataMap = MetadataContainer.classMetadataMap.get(classMetadataKey);
 
     if (!metadataMap) {
       metadataMap = new Map<symbol, any>();
-      classMetadataMap.set(target, metadataMap);
+      MetadataContainer.classMetadataMap.set(classMetadataKey, metadataMap);
     }
 
     metadataMap.set(metadataKey, metadataValue);
   }
 
-  public getClassMetadata<T>(target: ConstructorFunction, metadataKey: symbol): T | null {
-    const metadataMap = this.containerClassMetadataMap.get(target);
+  public static getClassMetadata<T>(target: ConstructorFunction, metadataKey: symbol): T | null {
+    const hasher = new Bun.CryptoHasher('sha256');
+    const classMetadataKey = hasher.update(target.toString()).digest('hex');
+
+    const metadataMap = MetadataContainer.classMetadataMap.get(classMetadataKey);
 
     if (!metadataMap) {
       return null;
@@ -65,22 +44,24 @@ export class MetadataContainer {
     metadataKey: symbol,
     metadataValue: T,
   ) {
-    const methodMetadataKey: MethodMetadataKeyType = { constructor: target, methodName };
+    const hasher = new Bun.CryptoHasher('sha256');
+    const methodMetadataKey = hasher.update(target.toString()).update(methodName).digest('hex');
 
-    let metadataMap = methodMetadataMap.get(methodMetadataKey);
+    let metadataMap = MetadataContainer.methodMetadataMap.get(methodMetadataKey);
 
     if (!metadataMap) {
       metadataMap = new Map<symbol, any>();
-      methodMetadataMap.set(methodMetadataKey, metadataMap);
+      MetadataContainer.methodMetadataMap.set(methodMetadataKey, metadataMap);
     }
 
     metadataMap.set(metadataKey, metadataValue);
   }
 
-  public getMethodMetadata<T>(target: ConstructorFunction, methodName: string, metadataKey: symbol): T | null {
-    const methodMetadataKey: MethodMetadataKeyType = { constructor: target, methodName };
+  public static getMethodMetadata<T>(target: ConstructorFunction, methodName: string, metadataKey: symbol): T | null {
+    const hasher = new Bun.CryptoHasher('sha256');
+    const methodMetadataKey = hasher.update(target.toString()).update(methodName).digest('hex');
 
-    const metadataMap = this.containerMethodMetadataMap.get(methodMetadataKey);
+    const metadataMap = MetadataContainer.methodMetadataMap.get(methodMetadataKey);
 
     if (!metadataMap) {
       return null;

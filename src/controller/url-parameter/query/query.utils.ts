@@ -1,4 +1,4 @@
-import { QUERY_METADATA_KEY } from '../../../key/controller.metadata.key.ts';
+import { QUERY_METADATA_KEY } from '../../../metadata/key/controller.metadata.key.ts';
 
 export type QueryResultType = {
   index: number;

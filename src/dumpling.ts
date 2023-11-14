@@ -1,9 +1,9 @@
 import { FrontController } from './controller/front-controller/front.controller.ts';
 import * as path from 'path';
 import * as fs from 'fs';
-import { WHEAT } from './element/wheat.ts';
 import { DumplingContainer } from './di/dumpling.container.ts';
 import { MetadataContainer } from './metadata/metadata.container.ts';
+import { WHEAT } from './metadata/key/wheat.metadata.key.ts';
 
 export class Dumpling {
   constructor() {}
@@ -14,10 +14,8 @@ export class Dumpling {
     registerPromise.then((wheatList) => {
       const flatWheatList = wheatList.flat();
       const dumplingContainer = DumplingContainer.instance;
-
       this.resolveDi(flatWheatList, dumplingContainer);
-
-      this.injectEssentialWheat(dumplingContainer);
+      this.injectEssentialWheat();
       this.run();
     });
   }
@@ -49,7 +47,7 @@ export class Dumpling {
           const wheatList = Object.keys(module).map((key) => {
             const exportedEntity = module[key];
             if (typeof exportedEntity === 'function') {
-              const isWheat = Reflect.getMetadata(WHEAT, exportedEntity);
+              const isWheat = MetadataContainer.getClassMetadata<boolean>(exportedEntity, WHEAT);
               if (isWheat) {
                 return exportedEntity;
               }
@@ -72,11 +70,7 @@ export class Dumpling {
     dumplingContainer.initWheat();
   }
 
-  private injectEssentialWheat(dumplingContainer: DumplingContainer) {
-    dumplingContainer.addWheatInstance(FrontController, new FrontController());
-  }
-
-  private generateMetadataController() {
-    DumplingContainer.instance.addWheatInstance(MetadataContainer, new MetadataContainer());
+  private injectEssentialWheat() {
+    DumplingContainer.instance.addWheatInstance(FrontController, new FrontController());
   }
 }

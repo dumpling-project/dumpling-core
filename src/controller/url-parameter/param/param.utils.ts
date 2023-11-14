@@ -1,5 +1,5 @@
 import { RequestMapper } from '../../request-mapper/request.mapper.ts';
-import { PARAM_METADATA_KEY } from '../../../key/controller.metadata.key.ts';
+import { PARAM_METADATA_KEY } from '../../../metadata/key/controller.metadata.key.ts';
 
 export interface ParamResultType {
   index: number;

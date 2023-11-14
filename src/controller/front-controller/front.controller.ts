@@ -1,15 +1,11 @@
 import { Wheat } from '../../element/wheat.ts';
 import { ConstructorFunction, DumplingContainer } from '../../di/dumpling.container.ts';
-import {
-  CONTROLLER,
-  REQUEST_MAPPING_METADATA_KEY,
-  RequestMappingMetadataType,
-} from '../../key/controller.metadata.key.ts';
+import { CONTROLLER, REQUEST_MAPPING_METADATA_KEY } from '../../metadata/key/controller.metadata.key.ts';
 import { RouterUtils } from './router.utils.ts';
 import { DynamicRouterNode } from './dynamic.router.node.ts';
 import { HttpMethodType } from '../../global/http/http.method.ts';
-import { AppController } from '../../../test/AppController.ts';
-import { AppService } from '../../../test/AppService.ts';
+import { MetadataContainer } from '../../metadata/metadata.container.ts';
+import { ControllerMetadataType, RequestMappingMetadataType } from '../../metadata/type/controller.metadata.type.ts';
 
 type StaticRouteControllerMapType = {
   method: HttpMethodType;
@@ -32,33 +28,19 @@ export class FrontController {
 
     allWheatInstance.forEach((wheat: any, wheatKey: ConstructorFunction) => {
       const target = wheatKey;
-      const controllerMetadata = Reflect.getMetadata(CONTROLLER, target);
+      const controllerMetadata = MetadataContainer.getClassMetadata<ControllerMetadataType>(target, CONTROLLER);
 
       if (controllerMetadata) {
         const methods = Object.getOwnPropertyNames(target.prototype);
 
-        console.log(methods);
-
         methods.forEach((methodName) => {
           const method = target.prototype[methodName];
-          console.log('=======================');
-          console.log(methodName);
 
-          // console.log(
-          //   Reflect.getMetadata(
-          //     REQUEST_MAPPING_METADATA_KEY,
-          //     new AppController(DumplingContainer.instance.getWheatInstance(AppService)),
-          //     'helloGet',
-          //   ),
-          // );
-
-          const requestMappingMetadata: RequestMappingMetadataType = Reflect.getMetadata(
+          const requestMappingMetadata: RequestMappingMetadataType | null = MetadataContainer.getMethodMetadata(
+            target,
+            methodName,
             REQUEST_MAPPING_METADATA_KEY,
-            method,
           );
-
-          console.log(requestMappingMetadata);
-          console.log(method);
 
           if (requestMappingMetadata && !RouterUtils.isDynamicPath(requestMappingMetadata.path)) {
             this.registerStaticRouteController(controllerMetadata.path, requestMappingMetadata, method.bind(wheat));
