@@ -1,4 +1,6 @@
 import { BODY_METADATA_KEY } from '../../../metadata/key/controller.metadata.key.ts';
+import { MetadataContainer } from '../../../metadata/metadata.container.ts';
+import { ConstructorFunction } from '../../../di/dumpling.container.ts';
 
 export type BodyResultType = {
   index: number;
@@ -6,7 +8,9 @@ export type BodyResultType = {
 };
 export class BodyUtils {
   public static async applyBody(request: Request, target: Object, propertyKey: string | symbol, args: any[]) {
-    const requiredBodyParams = Reflect.getOwnMetadata(BODY_METADATA_KEY, target, propertyKey) || {};
+    const requiredBodyParams =
+      MetadataContainer.getMethodMetadata(target.constructor as ConstructorFunction, propertyKey, BODY_METADATA_KEY) ||
+      {};
     const bodyData = await this.resolveBodyData(request); // 여기서 적절한 파싱 로직을 추가할 수 있습니다.
     return Object.entries(requiredBodyParams).map(([parameterIndex, _]) => ({
       index: parseInt(parameterIndex, 10),

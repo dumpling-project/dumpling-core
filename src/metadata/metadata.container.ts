@@ -40,12 +40,13 @@ export class MetadataContainer {
 
   public static setMethodMetadata<T>(
     target: ConstructorFunction,
-    methodName: string,
+    methodName: string | symbol,
     metadataKey: symbol,
     metadataValue: T,
   ) {
     const hasher = new Bun.CryptoHasher('sha256');
-    const methodMetadataKey = hasher.update(target.toString()).update(methodName).digest('hex');
+    const methodNameString = methodName.toString();
+    const methodMetadataKey = hasher.update(target.toString()).update(methodNameString).digest('hex');
 
     let metadataMap = MetadataContainer.methodMetadataMap.get(methodMetadataKey);
 
@@ -57,9 +58,14 @@ export class MetadataContainer {
     metadataMap.set(metadataKey, metadataValue);
   }
 
-  public static getMethodMetadata<T>(target: ConstructorFunction, methodName: string, metadataKey: symbol): T | null {
+  public static getMethodMetadata<T>(
+    target: ConstructorFunction,
+    methodName: string | symbol,
+    metadataKey: symbol,
+  ): T | null {
     const hasher = new Bun.CryptoHasher('sha256');
-    const methodMetadataKey = hasher.update(target.toString()).update(methodName).digest('hex');
+    const methodNameString = methodName.toString();
+    const methodMetadataKey = hasher.update(target.toString()).update(methodNameString).digest('hex');
 
     const metadataMap = MetadataContainer.methodMetadataMap.get(methodMetadataKey);
 

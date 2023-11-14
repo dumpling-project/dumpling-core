@@ -5,3 +5,5 @@ export type ControllerMetadataType = {
 };
 
 export type RequestMappingMetadataType = { path: string; method: HttpMethodType };
+
+export type MethodParameterMetadataType = { [key: number]: string | boolean };
