@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post, Query, Req, UseMiddleware } from '.
 import { AppService } from './AppService.ts';
 import { LogMiddleware } from './log.middeware.ts';
 
+@UseMiddleware(LogMiddleware)
 @Controller('/test')
 export class AppController {
   constructor(private appService: AppService) {}
@@ -13,7 +14,6 @@ export class AppController {
     return new Response(text);
   }
 
-  @UseMiddleware(LogMiddleware)
   @Get('/hello')
   public async helloGet(@Req() request: Request) {
     console.log('helloGet');
