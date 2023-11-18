@@ -75,4 +75,22 @@ export class MetadataContainer {
 
     return metadataMap.get(metadataKey);
   }
+
+  public static getMethodMetadataByKey<T>(methodMetadataKey: string, metadataKey: symbol): T | null {
+    const metadataMap = MetadataContainer.methodMetadataMap.get(methodMetadataKey);
+
+    if (!metadataMap) {
+      return null;
+    }
+
+    return metadataMap.get(metadataKey);
+  }
+
+  public static getMethodMetadataKey(target: ConstructorFunction, methodName: string | symbol): string {
+    const hasher = new Bun.CryptoHasher('sha256');
+    const methodNameString = methodName.toString();
+    const methodMetadataKey = hasher.update(target.toString()).update(methodNameString).digest('hex');
+
+    return methodMetadataKey;
+  }
 }

@@ -6,6 +6,7 @@ import { DynamicRouterNode } from './dynamic.router.node.ts';
 import { HttpMethodType } from '../../global/http/http.method.ts';
 import { MetadataContainer } from '../../metadata/metadata.container.ts';
 import { ControllerMetadataType, RequestMappingMetadataType } from '../../metadata/type/controller.metadata.type.ts';
+import { Orchestrator } from '../../orchestrator/orchestrator.ts';
 
 type StaticRouteControllerMapType = {
   method: HttpMethodType;
@@ -20,7 +21,9 @@ export class FrontController {
   >();
   private dynamicRouteControllerTreeRoot: DynamicRouterNode = new DynamicRouterNode('/');
 
-  constructor() {
+  private routableMethodKeyMap: Map<Function, string> = new Map<Function, string>();
+
+  constructor(private orchestrator: Orchestrator) {
     this.loadControllers();
   }
   private loadControllers() {
@@ -34,7 +37,16 @@ export class FrontController {
         const methods = Object.getOwnPropertyNames(target.prototype);
 
         methods.forEach((methodName) => {
-          const method = target.prototype[methodName];
+          const proxy = new Proxy(target.prototype, {
+            get(target, prop, receiver) {
+              if (typeof target[prop] === 'function') {
+                return target[prop].bind(target);
+              }
+              return Reflect.get(target, prop, receiver);
+            },
+          });
+
+          const method = proxy[methodName];
 
           const requestMappingMetadata: RequestMappingMetadataType | null = MetadataContainer.getMethodMetadata(
             target,
@@ -42,12 +54,17 @@ export class FrontController {
             REQUEST_MAPPING_METADATA_KEY,
           );
 
+          const routableMethodKey = MetadataContainer.getMethodMetadataKey(target, methodName);
+          const bindMethod = method.bind(wheat);
+
+          this.routableMethodKeyMap.set(bindMethod, routableMethodKey);
+
           if (requestMappingMetadata && !RouterUtils.isDynamicPath(requestMappingMetadata.path)) {
-            this.registerStaticRouteController(controllerMetadata.path, requestMappingMetadata, method.bind(wheat));
+            this.registerStaticRouteController(controllerMetadata.path, requestMappingMetadata, bindMethod);
           }
 
           if (requestMappingMetadata && RouterUtils.isDynamicPath(requestMappingMetadata.path)) {
-            this.registerDynamicRouteController(controllerMetadata.path, requestMappingMetadata, method.bind(wheat));
+            this.registerDynamicRouteController(controllerMetadata.path, requestMappingMetadata, bindMethod);
           }
         });
       }
@@ -129,7 +146,11 @@ export class FrontController {
     }
 
     if (controllerAction) {
-      response = await controllerAction(request);
+      response = await this.orchestrator.executeRoutableMethod(
+        controllerAction,
+        this.routableMethodKeyMap.get(controllerAction) as string,
+        request,
+      );
     }
 
     return response ? response : new Response('Not Found', { status: 404 });

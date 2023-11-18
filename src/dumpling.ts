@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import { DumplingContainer } from './di/dumpling.container.ts';
 import { MetadataContainer } from './metadata/metadata.container.ts';
 import { WHEAT } from './metadata/key/wheat.metadata.key.ts';
+import { Orchestrator } from './orchestrator/orchestrator.ts';
 
 export class Dumpling {
   constructor() {}
@@ -71,6 +72,8 @@ export class Dumpling {
   }
 
   private injectEssentialWheat() {
-    DumplingContainer.instance.addWheatInstance(FrontController, new FrontController());
+    const orchestrator = new Orchestrator();
+    DumplingContainer.instance.addWheatInstance(Orchestrator, orchestrator);
+    DumplingContainer.instance.addWheatInstance(FrontController, new FrontController(orchestrator));
   }
 }

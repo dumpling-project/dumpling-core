@@ -1,5 +1,5 @@
-import {Dumpling} from "../src/dumpling.ts";
+import { Dumpling } from '../src/dumpling.ts';
 
-const dumpling = new Dumpling()
+const dumpling = new Dumpling();
 
 dumpling.bootstrap();

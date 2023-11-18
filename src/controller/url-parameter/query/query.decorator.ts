@@ -1,4 +1,4 @@
-import { PARAM_METADATA_KEY, QUERY_METADATA_KEY } from '../../../metadata/key/controller.metadata.key.ts';
+import { QUERY_METADATA_KEY } from '../../../metadata/key/controller.metadata.key.ts';
 import { MethodParameterMetadataType } from '../../../metadata/type/controller.metadata.type.ts';
 import { MetadataContainer } from '../../../metadata/metadata.container.ts';
 import { ConstructorFunction } from '../../../di/dumpling.container.ts';

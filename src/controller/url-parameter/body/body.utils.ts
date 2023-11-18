@@ -11,6 +11,7 @@ export class BodyUtils {
     const requiredBodyParams =
       MetadataContainer.getMethodMetadata(target.constructor as ConstructorFunction, propertyKey, BODY_METADATA_KEY) ||
       {};
+
     const bodyData = await this.resolveBodyData(request); // 여기서 적절한 파싱 로직을 추가할 수 있습니다.
     return Object.entries(requiredBodyParams).map(([parameterIndex, _]) => ({
       index: parseInt(parameterIndex, 10),
