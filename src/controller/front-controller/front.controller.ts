@@ -40,7 +40,7 @@ export class FrontController {
           const proxy = new Proxy(target.prototype, {
             get(target, prop, receiver) {
               if (typeof target[prop] === 'function') {
-                return target[prop].bind(target);
+                return target[prop].bind(wheat);
               }
               return Reflect.get(target, prop, receiver);
             },
@@ -59,12 +59,25 @@ export class FrontController {
 
           this.routableMethodKeyMap.set(bindMethod, routableMethodKey);
 
-          if (requestMappingMetadata && !RouterUtils.isDynamicPath(requestMappingMetadata.path)) {
-            this.registerStaticRouteController(controllerMetadata.path, requestMappingMetadata, bindMethod);
-          }
+          if (requestMappingMetadata) {
+            requestMappingMetadata.fullPath = RouterUtils.joinPaths(
+              controllerMetadata.path + requestMappingMetadata.path,
+            );
 
-          if (requestMappingMetadata && RouterUtils.isDynamicPath(requestMappingMetadata.path)) {
-            this.registerDynamicRouteController(controllerMetadata.path, requestMappingMetadata, bindMethod);
+            MetadataContainer.setMethodMetadata(
+              target,
+              methodName,
+              REQUEST_MAPPING_METADATA_KEY,
+              requestMappingMetadata,
+            );
+
+            if (!RouterUtils.isDynamicPath(requestMappingMetadata.path)) {
+              this.registerStaticRouteController(controllerMetadata.path, requestMappingMetadata, bindMethod);
+            }
+
+            if (RouterUtils.isDynamicPath(requestMappingMetadata.path)) {
+              this.registerDynamicRouteController(controllerMetadata.path, requestMappingMetadata, bindMethod);
+            }
           }
         });
       }

@@ -1,4 +1,4 @@
-import { AbstractMiddleware, Middleware } from '../src';
+import { AbstractMiddleware, Middleware } from '../../src';
 
 @Middleware()
 export class LogMiddleware extends AbstractMiddleware {

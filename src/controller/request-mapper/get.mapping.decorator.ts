@@ -1,13 +1,5 @@
-import {
-  CONTROLLER,
-  PARAM_METADATA_KEY,
-  REQUEST_MAPPING_METADATA_KEY,
-} from '../../metadata/key/controller.metadata.key.ts';
-import { RequestMapper } from './request.mapper.ts';
+import { CONTROLLER, REQUEST_MAPPING_METADATA_KEY } from '../../metadata/key/controller.metadata.key.ts';
 import { HttpMethod } from '../../global/http/http.method.ts';
-import { ParamUtils } from '../url-parameter/param/param.utils.ts';
-import { QueryUtils } from '../url-parameter/query/query.utils.ts';
-import { RequestUtils } from '../url-parameter/request/request.utils.ts';
 import { MetadataContainer } from '../../metadata/metadata.container.ts';
 import { ControllerMetadataType, RequestMappingMetadataType } from '../../metadata/type/controller.metadata.type.ts';
 
@@ -38,8 +30,10 @@ export function Get(path: string): MethodDecorator {
     //   return originalMethod.apply(this, modifiedArgs);
     // };
 
+    const prefix = MetadataContainer.getClassMetadata<ControllerMetadataType>(target.constructor, CONTROLLER)?.path;
+
     const requestMappingMetadata: RequestMappingMetadataType = {
-      path,
+      path: path,
       method: HttpMethod.GET,
     };
 

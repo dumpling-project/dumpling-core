@@ -9,11 +9,14 @@ export { Put } from './controller/request-mapper/put.mapping.decorator.ts';
 export { Delete } from './controller/request-mapper/delete.mapping.decorator.ts';
 export { Patch } from './controller/request-mapper/patch.mapping.decorator.ts';
 
-export { Param } from './controller/url-parameter/param/param.decorator.ts';
-export { Query } from './controller/url-parameter/query/query.decorator.ts';
-export { Body } from './controller/url-parameter/body/body.decorator.ts';
-export { Req } from './controller/url-parameter/request/request.decorator.ts';
+export { Param } from './controller/controller-method-parameter/param.decorator.ts';
+export { Query } from './controller/controller-method-parameter/query.decorator.ts';
+export { Body } from './controller/controller-method-parameter/body.decorator.ts';
+export { Req } from './controller/controller-method-parameter/request.decorator.ts';
 
 export { Middleware } from './element/middleware.ts';
 export { UseMiddleware } from './middleware/usemiddleware.decorator.ts';
 export { AbstractMiddleware } from './middleware/middleware.abstract.ts';
+
+export type { PipeInterface } from './pipe/pipe.interface.ts';
+export { PipeTypeEnum } from './metadata/type/pipe.metadata.type.ts';

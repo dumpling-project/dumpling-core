@@ -5,6 +5,10 @@ import { DumplingContainer } from './di/dumpling.container.ts';
 import { MetadataContainer } from './metadata/metadata.container.ts';
 import { WHEAT } from './metadata/key/wheat.metadata.key.ts';
 import { Orchestrator } from './orchestrator/orchestrator.ts';
+import { BodyPipe } from './pipe/controller-method-parameter-pipe/body.pipe.ts';
+import { ParamPipe } from './pipe/controller-method-parameter-pipe/param.pipe.ts';
+import { QueryPipe } from './pipe/controller-method-parameter-pipe/query.pipe.ts';
+import { RequestPipe } from './pipe/controller-method-parameter-pipe/request.pipe.ts';
 
 export class Dumpling {
   constructor() {}
@@ -72,6 +76,12 @@ export class Dumpling {
   }
 
   private injectEssentialWheat() {
+    //Import default use pipe
+    DumplingContainer.instance.addWheatInstance(BodyPipe, new BodyPipe());
+    DumplingContainer.instance.addWheatInstance(ParamPipe, new ParamPipe());
+    DumplingContainer.instance.addWheatInstance(QueryPipe, new QueryPipe());
+    DumplingContainer.instance.addWheatInstance(RequestPipe, new RequestPipe());
+
     const orchestrator = new Orchestrator();
     DumplingContainer.instance.addWheatInstance(Orchestrator, orchestrator);
     DumplingContainer.instance.addWheatInstance(FrontController, new FrontController(orchestrator));

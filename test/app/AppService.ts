@@ -1,4 +1,4 @@
-import { Wheat } from '../src';
+import { Wheat } from '../../src';
 
 @Wheat()
 export class AppService {
